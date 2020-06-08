@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Web App</title>
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+			integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+			crossorigin="anonymous"
+		/>
+		<style>
+			body {
+				margin-top: 2%;
+				margin-bottom: 2%;
+			}
+			#save {
+				text-align: center;
+				display: block;
+				margin-top: 3%;
+				margin-right: auto;
+				margin-left: auto;
+				width: 200px;
+			}
+			label {
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root" class="container">
+			<div class="row">
+				<div id="info" class="col">
+					<div id="geninfo">
+						<h2>General Info</h2>
+						<label for="name">Name</label>
+						<input type="text" class="form-control form-control-sm font-weight-bold" id="name" readonly />
+						<label for="age">Age</label>
+						<input type="number" class="form-control form-control-sm font-weight-bold" id="age" readonly />
+						<label for="gender">Gender</label>
+						<select class="form-control form-control-sm font-weight-bold" id="gender" disabled>
+							<option>Male</option>
+							<option>Female</option>
+						</select>
+					</div>
+					<div>
+						<h2>Emotion Assessment</h2>
+						<label for="eae">ECG Assessment</label>
+						<input type="text" class="form-control form-control-sm font-weight-bold" id="eae" readonly />
+						<label for="eac">CNN Assessment</label>
+						<input type="text" class="form-control form-control-sm font-weight-bold" id="eac" readonly />
+						<label for="eap">Patient's Assessment</label>
+						<input type="text" class="form-control form-control-sm font-weight-bold" id="eap" readonly />
+					</div>
+				</div>
+				<div id="result" class="col">
+					<div>
+						<h2>Game Scores</h2>
+						<label for="gswm">WM (Low, Decent, Good)</label>
+						<input type="text" class="form-control form-control-sm font-weight-bold" id="gswm" readonly />
+						<label for="gsfx">Flexibility (Low, Decent, Good)</label>
+						<input type="text" class="form-control form-control-sm font-weight-bold" id="gsfx" readonly />
+						<label for="gssc">Self-Control (Low, Decent, Good)</label>
+						<input type="text" class="form-control form-control-sm font-weight-bold" id="gssc" readonly />
+					</div>
+					<div>
+						<h2>Psychological Test Scores</h2>
+						<label for="ptwm">WM (Low, Decent, Good)</label>
+						<input type="text" class="form-control form-control-sm font-weight-bold" id="ptwm" readonly />
+						<label for="ptwfx">Flexibility (Low, Decent, Good)</label>
+						<input type="text" class="form-control form-control-sm font-weight-bold" id="ptfx" readonly />
+						<label for="ptsc">Self-Control (Low, Decent, Good)</label>
+						<input type="text" class="form-control form-control-sm font-weight-bold" id="ptsc" readonly />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<button id="save" class="btn btn-primary">Save</button>
+			</div>
+		</div>
+
+		<script
+			src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+			integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+			integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+			integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+			crossorigin="anonymous"
+		></script>
+
+		<script>
+			$('#save').on('click', function () {
+				// fetch send post request
+				// server will create file and save it
+				// server returns the file name
+				// open in new tab, download the filename
+
+				const genInfo = JSON.parse(sessionStorage.getItem('genInfo'));
+				const emotions = JSON.parse(sessionStorage.getItem('emotions'));
+				const results = JSON.parse(sessionStorage.getItem('results'));
+				const data = { genInfo, emotions, results };
+
+				fetch('/save', {
+					method: 'POST',
+					mode: 'cors',
+					cache: 'no-cache',
+					credentials: 'same-origin',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					redirect: 'follow',
+					referrerPolicy: 'no-referrer',
+					body: JSON.stringify(data),
+				})
+					.then((res) => res.json())
+					.then((res) => {
+						if (res.success) {
+							window.open(`/download/${res.filename}`);
+						} else {
+							console.err(res.err);
+						}
+					})
+					.catch((err) => console.error(err));
+			});
+
+			const genInfo = JSON.parse(sessionStorage.getItem('genInfo'));
+			$('#name').val(genInfo.name);
+			$('#age').val(genInfo.age);
+			$('#gender').val(genInfo.gender);
+
+			const emotions = JSON.parse(sessionStorage.getItem('emotions'));
+			$('#eae').val(emotions.ecg);
+			$('#eac').val(emotions.cnn);
+			$('#eap').val(emotions.patient);
+
+			const results = JSON.parse(sessionStorage.getItem('results'));
+			$('#gswm').val(results.gameResults.wm);
+			$('#gsfx').val(results.gameResults.flex);
+			$('#gssc').val(results.gameResults.control);
+			$('#ptwm').val(results.psychResults.wm);
+			$('#ptfx').val(results.psychResults.flex);
+			$('#ptsc').val(results.psychResults.control);
+		</script>
+	</body>
+</html>

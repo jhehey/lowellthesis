@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Web App</title>
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+			integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+			crossorigin="anonymous"
+		/>
+		<style>
+			body {
+				margin-top: 2%;
+				margin-bottom: 2%;
+			}
+			#submit {
+				text-align: center;
+				display: block;
+				margin-top: 3%;
+				margin-right: auto;
+				margin-left: auto;
+				width: 200px;
+			}
+			label {
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root" class="container">
+			<div class="row">
+				<div id="info" class="col">
+					<div id="geninfo">
+						<h2>General Info</h2>
+						<label for="name">Name</label>
+						<input type="text" class="form-control form-control-sm" id="name" />
+						<label for="age">Age</label>
+						<input type="number" class="form-control form-control-sm" id="age" />
+						<label for="gender">Gender</label>
+						<select class="form-control form-control-sm" id="gender">
+							<option>Male</option>
+							<option>Female</option>
+						</select>
+					</div>
+					<div>
+						<h2>Emotion Assessment</h2>
+						<label for="eae">ECG Assessment</label>
+						<select class="form-control form-control-sm" id="eae">
+							<option>Positive</option>
+							<option>Negative</option>
+							<option>Neutral</option>
+						</select>
+						<label for="eac">CNN Assessment</label>
+						<select class="form-control form-control-sm" id="eac">
+							<option>Happy</option>
+							<option>Sad</option>
+							<option>Fear</option>
+							<option>Angry</option>
+							<option>Neutral</option>
+						</select>
+						<label for="eap">Patient's Assessment</label>
+						<select class="form-control form-control-sm" id="eap">
+							<option>Positive</option>
+							<option>Negative</option>
+							<option>Unknown</option>
+						</select>
+					</div>
+				</div>
+				<div id="result" class="col">
+					<div>
+						<h2>Game Scores</h2>
+						<label for="gswm">WM (1-20)</label>
+						<input type="number" class="form-control form-control-sm ranged" id="gswm" min="1" max="20" />
+						<label for="gsfx">Flexibility (1-50)</label>
+						<input type="number" class="form-control form-control-sm ranged" id="gsfx" min="1" max="50" />
+						<label for="gssc">Self-Control (1-20)</label>
+						<input type="number" class="form-control form-control-sm ranged" id="gssc" min="1" max="20" />
+					</div>
+					<div>
+						<h2>Psychological Test Scores</h2>
+						<label for="ptwm">WM (1-10)</label>
+						<input type="number" class="form-control form-control-sm ranged" id="ptwm" min="1" max="10" />
+						<label for="ptwfx">Flexibility (1-32)</label>
+						<input type="number" class="form-control form-control-sm ranged" id="ptfx" min="1" max="32" />
+						<label for="ptsc">Self-Control (1-5)</label>
+						<input type="number" class="form-control form-control-sm ranged" id="ptsc" min="1" max="5" />
+					</div>
+				</div>
+			</div>
+			<div>
+				<button id="submit" type="submit" class="btn btn-primary">Submit</button>
+			</div>
+		</div>
+
+		<script
+			src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+			integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+			integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+			integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+			crossorigin="anonymous"
+		></script>
+
+		<script>
+			$('.ranged').on('input', function () {
+				const $elem = $(this);
+				const val = parseFloat($elem.val());
+				const min = $elem.attr('min');
+				const max = $elem.attr('max');
+
+				if (val < min) {
+					$elem.val(min);
+				}
+
+				if (val > max) {
+					$elem.val(max);
+				}
+			});
+
+			$('#submit').on('click', function () {
+				const genInfo = {
+					name: $('#name').val(),
+					age: $('#age').val(),
+					gender: $('#gender').val(),
+				};
+				sessionStorage.setItem('genInfo', JSON.stringify(genInfo));
+
+				const emotions = {
+					ecg: $('#eae').val(),
+					cnn: $('#eac').val(),
+					patient: $('#eap').val(),
+				};
+				sessionStorage.setItem('emotions', JSON.stringify(emotions));
+
+				const scores = {
+					gameScores: {
+						wm: parseFloat($('#gswm').val()),
+						flex: parseFloat($('#gsfx').val()),
+						control: parseFloat($('#gssc').val()),
+					},
+					psychological: {
+						wm: parseFloat($('#ptwm').val()),
+						flex: parseFloat($('#ptfx').val()),
+						control: parseFloat($('#ptsc').val()),
+					},
+				};
+
+				const {
+					gameScores: { wm: gwm, flex: gflex, control: gcontrol },
+					psychological: { wm: pwm, flex: pflex, control: pcontrol },
+				} = scores;
+
+				gameResults = {};
+				// Game WM
+				if (gwm >= 1 && gwm <= 6.99) {
+					gameResults.wm = 'Low WM';
+				} else if (gwm >= 7 && gwm <= 13.99) {
+					gameResults.wm = 'Decent WM';
+				} else if (gwm >= 14 && gwm <= 20) {
+					gameResults.wm = 'Good WM';
+				} else {
+					gameResults.wm = 'Invalid';
+				}
+
+				// Game Flexibility
+				if (gflex >= 1 && gflex <= 16.99) {
+					gameResults.flex = 'Good Flexibility';
+				} else if (gflex >= 17 && gflex <= 33.99) {
+					gameResults.flex = 'Decent Flexibility';
+				} else if (gflex >= 34 && gflex <= 50) {
+					gameResults.flex = 'Low Flexibility';
+				} else {
+					gameResults.flex = 'Invalid';
+				}
+
+				// Game Self Control
+				if (gcontrol >= 1 && gcontrol <= 6.99) {
+					gameResults.control = 'Low Self Control';
+				} else if (gcontrol >= 7 && gcontrol <= 13.99) {
+					gameResults.control = 'Decent Self Control';
+				} else if (gcontrol >= 14 && gcontrol <= 20) {
+					gameResults.control = 'Good Self Control';
+				} else {
+					gameResults.control = 'Invalid';
+				}
+
+				psychResults = {};
+				// psych WM
+				if (pwm >= 1 && pwm <= 3.99) {
+					psychResults.wm = 'Low WM';
+				} else if (pwm >= 4 && pwm <= 7.99) {
+					psychResults.wm = 'Decent WM';
+				} else if (pwm >= 8 && pwm <= 10) {
+					psychResults.wm = 'Good WM';
+				} else {
+					psychResults.wm = 'Invalid';
+				}
+
+				// psych Flexibility
+				if (pflex >= 1 && pflex <= 10.99) {
+					psychResults.flex = 'Low Flexibility';
+				} else if (pflex >= 11 && pflex <= 21.99) {
+					psychResults.flex = 'Decent Flexibility';
+				} else if (pflex >= 22 && pflex <= 32) {
+					psychResults.flex = 'Good Flexibility';
+				} else {
+					psychResults.flex = 'Invalid';
+				}
+
+				// psych Self Control
+				if (pcontrol >= 1 && pcontrol <= 1.99) {
+					psychResults.control = 'Low Self Control';
+				} else if (pcontrol >= 2 && pcontrol <= 3.99) {
+					psychResults.control = 'Decent Self Control';
+				} else if (pcontrol >= 4 && pcontrol <= 5) {
+					psychResults.control = 'Good Self Control';
+				} else {
+					psychResults.control = 'Invalid';
+				}
+
+				const results = {
+					gameResults,
+					psychResults,
+				};
+
+				sessionStorage.setItem('results', JSON.stringify(results));
+				window.open('/result');
+			});
+		</script>
+	</body>
+</html>
