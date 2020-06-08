@@ -1,5 +1,5 @@
 Install Dependencies by running the command below
-\$ npm install
+`npm install`
 
 Start development server
-\$ npm start
+`npm start`
