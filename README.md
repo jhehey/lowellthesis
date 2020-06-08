@@ -1,5 +1,5 @@
-Install Dependencies \n
+Install Dependencies <br/>
 `npm install`
 
-Start development server \n
+Start development server <br/>
 `npm start`
