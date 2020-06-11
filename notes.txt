@@ -1,0 +1,16 @@
+> download repo
+> make sure you have nodejs on your machine
+> if not installed https://nodejs.org/en/download/
+
+# once downloaded
+> open project folder
+> run `npm install` to install dependencies
+> run `npm start` to start server
+
+open url on localhost:3000
+
+Kapag nag iinput sa mga scores, may min and max value sya. un lng yung pwede
+
+then pagka submit, mag oopen new tab andun interpretation ng scores.
+
+then save button to save to a text file the results
